@@ -19,19 +19,7 @@ struct AngularVelocity {
    double yaw;
 };
 
-struct LinearAcceleration {
-   double x;
-   double y;
-   double z;
-};
-
-struct Location {
-   double x;
-   double y;
-   double z;
-};
-
-struct Velocity {
+struct VectorXYZ {
    double x;
    double y;
    double z;
@@ -74,10 +62,10 @@ struct ComputeDRParams {
    DR_PARAMS_TYPE drParamsType;
    Orientation localEulerAngles;
    Quaternion quaternion;
-   LinearAcceleration acceleration;
+   VectorXYZ acceleration;
    AngularVelocity angularVelocity;
-   Location location;
-   Velocity velocity;
+   VectorXYZ location;
+   VectorXYZ velocity;
    Orientation orientation;
 };
 
@@ -285,7 +273,7 @@ int computeDR( ComputeDRParams & params ) {
 
          //Compute final velocity vector in WCS coords
          cout << ">>> computeDR: Computing final velocity vector in WCS coords." << endl;
-         Velocity finalVelWCS = { 0.0, 0.0, 0.0 };
+         VectorXYZ finalVelWCS = { 0.0, 0.0, 0.0 };
          finalVelWCS.x = params.velocity.x + ( params.acceleration.x * params.deltaTime );
          finalVelWCS.y = params.velocity.y + ( params.acceleration.y * params.deltaTime );
          finalVelWCS.z = params.velocity.z + ( params.acceleration.z * params.deltaTime );
@@ -313,8 +301,8 @@ int computeDR( ComputeDRParams & params ) {
    else {
       //velocity/acceleration in ECS coords
       cout << ">>> computeDR: velocity/acceleration in ECS coords." << endl;
-      Location vDistECS1 = { 0.0, 0.0, 0.0 };
-      Location aDistECS1 = { 0.0, 0.0, 0.0 };
+      VectorXYZ vDistECS1 = { 0.0, 0.0, 0.0 };
+      VectorXYZ aDistECS1 = { 0.0, 0.0, 0.0 };
       if ( rotating ) {
          //Compute the first integral of the final ECS to initial ECS rotation matrix for use with velocity
          cout << ">>> computeDR: Computing the first integral of the final ECS to initial ECS rotation matrix for use with velocity."
@@ -433,7 +421,7 @@ int computeDR( ComputeDRParams & params ) {
 
       //Compute the total movement in initial ECS coords
       cout << ">>> computeDR: Computing the total movement in initial ECS coords." << endl;
-      Location distECS1 = { 0.0, 0.0, 0.0 };
+      VectorXYZ distECS1 = { 0.0, 0.0, 0.0 };
       distECS1.x = vDistECS1.x + aDistECS1.x;
       distECS1.y = vDistECS1.y + aDistECS1.y;
       distECS1.z = vDistECS1.z + aDistECS1.z;
